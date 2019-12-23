@@ -1,0 +1,38 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>netstandard2.0;netstandard2.1;netcoreapp2.1;netcoreapp3.1</TargetFrameworks>
+	  <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+	  <AssemblyVersion>$(Major).$(Minor).$(Patch).$(BuildNumber)</AssemblyVersion>
+	  <FileVersion>$(Major).$(Minor).$(Patch).$(BuildNumber)</FileVersion>
+	  <Version Condition="'$(Configuration)' != 'Release'">$(Major).$(Minor).$(Patch)-beta</Version>
+	  <Version Condition="'$(Configuration)' == 'Release'">$(Major).$(Minor).$(Patch)</Version>
+	  <Authors>Adam Holt</Authors>
+	  <Company>Sannel Software, L.L.C.</Company>
+	  <Description>Extensions and Helpers used by at least one web project</Description>
+	  <PackageLicenseUrl></PackageLicenseUrl>
+	  <PackageProjectUrl>https://github.com/Sannel/Sannel.House.Common</PackageProjectUrl>
+	  <PackageLicenseFile>LICENSE</PackageLicenseFile>
+  </PropertyGroup>
+	<ItemGroup>
+		<PackageReference Include="Microsoft.AspNetCore.Mvc.Abstractions" Version="2.2.0" />
+		<PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.2.5" />
+		<PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="2.9.8">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+		<PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="2.1.0" />
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="2.2.0" />
+		<PackageReference Include="Microsoft.Extensions.Logging" Version="2.1.0" />
+		<PackageReference Include="Sannel.House.Base.Models" Version="0.9.415-beta" />
+		<PackageReference Include="System.Security.Principal" Version="4.3.0" />
+		<PackageReference Include="System.Security.Principal.Windows" Version="4.7.0" />
+	</ItemGroup>
+	<ItemGroup>
+	  <None Include="..\..\LICENSE">
+	    <Pack>True</Pack>
+	    <PackagePath></PackagePath>
+	  </None>
+	</ItemGroup>
+
+</Project>

@@ -7,11 +7,11 @@ pool:
 
 variables:
   sdk_version: 3.1.x
-  libary_project: src/Template/Template.csproj
-  support_netstandard20: false
-  support_netstandard21: false
-  support_netcoreapp21: false
-  support_netcoreapp31: false
+  libary_project: src/Sannel.House.Base.Web/Sannel.House.Base.Web.csproj
+  support_netstandard20: true
+  support_netstandard21: true
+  support_netcoreapp21: true
+  support_netcoreapp31: true
 
 steps:
 - task: UseDotNet@2
