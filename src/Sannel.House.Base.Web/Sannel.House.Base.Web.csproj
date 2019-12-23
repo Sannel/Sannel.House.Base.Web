@@ -9,10 +9,11 @@
 	  <Version Condition="'$(Configuration)' == 'Release'">$(Major).$(Minor).$(Patch)</Version>
 	  <Authors>Adam Holt</Authors>
 	  <Company>Sannel Software, L.L.C.</Company>
-	  <Description>Extensions and Helpers used by at least one web project</Description>
+	  <Description>Classes used to help setup Services and returning responses.</Description>
 	  <PackageLicenseUrl></PackageLicenseUrl>
-	  <PackageProjectUrl>https://github.com/Sannel/Sannel.House.Common</PackageProjectUrl>
+	  <PackageProjectUrl>https://github.com/Sannel/Sannel.House.Base.Web</PackageProjectUrl>
 	  <PackageLicenseFile>LICENSE</PackageLicenseFile>
+	  <RepositoryUrl>https://github.com/Sannel/Sannel.House.Base.Web</RepositoryUrl>
   </PropertyGroup>
 	<ItemGroup>
 		<PackageReference Include="Microsoft.AspNetCore.Mvc.Abstractions" Version="2.2.0" />
