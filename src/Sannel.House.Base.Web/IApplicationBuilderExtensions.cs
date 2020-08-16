@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 
@@ -28,9 +29,23 @@ namespace Microsoft.AspNetCore.Builder
 
 			var data = JsonSerializer.Serialize(response);
 
-			using var streamWriter = new StreamWriter(stream);
-			await streamWriter.WriteAsync(data).ConfigureAwait(false);
+			var b = Encoding.UTF8.GetBytes(data);
 
+#if NETSTANDARD2_0
+			await stream.WriteAsync(b, 0, b.Length);
+#else
+			await stream.WriteAsync(b);
+#endif
+		}
+
+		private static async Task writeStringAsync(Stream stream, string data)
+		{
+			var b = Encoding.UTF8.GetBytes(data);
+#if NETSTANDARD2_0
+			await stream.WriteAsync(b, 0, b.Length);
+#else
+			await stream.WriteAsync(b);
+#endif
 		}
 
 		private static string colorStatus(HealthStatus status) 
@@ -45,8 +60,7 @@ namespace Microsoft.AspNetCore.Builder
 		private static async Task writeHTMLAsync(Stream stream, HealthReport report)
 		{
 
-			using var streamWriter = new StreamWriter(stream);
-			await streamWriter.WriteAsync(@$"
+			await writeStringAsync(stream, @$"
 <html>
 <head>
 	<title>{report.Status}</title>
@@ -69,37 +83,37 @@ namespace Microsoft.AspNetCore.Builder
 			foreach(var key in report.Entries.Keys)
 			{
 				var item = report.Entries[key];
-				await streamWriter.WriteAsync("<hr />").ConfigureAwait(false);
-				await streamWriter.WriteAsync(@$"<h3>{key}</h3>
+				await writeStringAsync(stream, "<hr />");
+				await writeStringAsync(stream, @$"<h3>{key}</h3>
 <p>Status: <span class=""{colorStatus(item.Status)}"">{item.Status}</span></p>
 <p>Duration: {item.Duration}</p>
 <p>Description: {item.Description}</p>
-").ConfigureAwait(false);
+");
 				if(!(item.Exception is null))
 				{
-					await streamWriter.WriteAsync($"<p>Exception: {item.Exception}</p>").ConfigureAwait(false);
+					await writeStringAsync(stream, $"<p>Exception: {item.Exception}</p>");
 				}
 				if(item.Data?.Count > 0)
 				{
-					await streamWriter.WriteAsync("<h4>Data</h4>").ConfigureAwait(false);
+					await writeStringAsync(stream, "<h4>Data</h4>");
 					foreach(var d in item.Data)
 					{
-						await streamWriter.WriteAsync($"<p>{d.Key}={d.Value}</p>").ConfigureAwait(false);
+						await writeStringAsync(stream, $"<p>{d.Key}={d.Value}</p>");
 					}
 				}
 
 				if(item.Tags.Any())
 				{
-					await streamWriter.WriteAsync("<h4>Tags</h4>").ConfigureAwait(false);
-					await streamWriter.WriteAsync($"<p>{string.Join(",", item.Tags)}</p>").ConfigureAwait(false);
+					await writeStringAsync(stream, "<h4>Tags</h4>");
+					await writeStringAsync(stream, $"<p>{string.Join(",", item.Tags)}</p>");
 				}
 			}
 
-			await streamWriter.WriteAsync(@"
+			await writeStringAsync(stream, @"
 <hr />
 </body>
 </html>
-").ConfigureAwait(false);
+");
 		}
 
 		public static IApplicationBuilder UseHouseHealthChecks(this IApplicationBuilder applicationBuilder,
