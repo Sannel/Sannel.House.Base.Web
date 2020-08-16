@@ -66,15 +66,6 @@ steps:
     command: publish
     publishWebProjects: false
     projects: $(libary_project)
-    arguments: '-o $(Build.StagingDirectory)/netcoreapp2.1 -f netcoreapp2.1'
-    zipAfterPublish: false
-  condition: and(succeeded(), eq(variables['support_netcoreapp21'], 'true'))
-- task: DotNetCoreCLI@2
-  displayName: 'dotnet publish'
-  inputs:
-    command: publish
-    publishWebProjects: false
-    projects: $(libary_project)
     arguments: '-o $(Build.StagingDirectory)/netcoreapp3.1 -f netcoreapp3.1'
     zipAfterPublish: false
   condition: and(succeeded(), eq(variables['support_netcoreapp31'], 'true'))
