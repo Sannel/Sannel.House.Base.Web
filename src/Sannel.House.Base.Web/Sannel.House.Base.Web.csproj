@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0;netstandard2.1;netcoreapp2.1;netcoreapp3.1</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0;netstandard2.1;netcoreapp3.1</TargetFrameworks>
 	  <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 	  <AssemblyVersion>$(Major).$(Minor).$(Patch).$(BuildNumber)</AssemblyVersion>
 	  <FileVersion>$(Major).$(Minor).$(Patch).$(BuildNumber)</FileVersion>
@@ -14,8 +14,10 @@
 	  <PackageProjectUrl>https://github.com/Sannel/Sannel.House.Base.Web</PackageProjectUrl>
 	  <PackageLicenseFile>LICENSE</PackageLicenseFile>
 	  <RepositoryUrl>https://github.com/Sannel/Sannel.House.Base.Web</RepositoryUrl>
+	  <LangVersion>8.0</LangVersion>
   </PropertyGroup>
 	<ItemGroup>
+		<PackageReference Include="Microsoft.AspNetCore.Diagnostics.HealthChecks" Version="2.2.0" />
 		<PackageReference Include="Microsoft.AspNetCore.Mvc.Abstractions" Version="2.2.0" />
 		<PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.2.5" />
 		<PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="2.9.8">
@@ -24,6 +26,7 @@
 		</PackageReference>
 		<PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="2.1.0" />
 		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="2.2.0" />
+		<PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks" Version="3.1.7" />
 		<PackageReference Include="Microsoft.Extensions.Logging" Version="2.1.0" />
 		<PackageReference Include="Sannel.House.Base.Models" Version="0.9.415-beta" />
 		<PackageReference Include="System.Security.Principal" Version="4.3.0" />
