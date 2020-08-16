@@ -22,6 +22,7 @@ namespace Microsoft.AspNetCore.Builder
 		{
 			var response = new
 			{
+				StatusDate = DateTimeOffset.Now,
 				report.Status,
 				report.TotalDuration,
 				report.Entries
@@ -78,7 +79,8 @@ namespace Microsoft.AspNetCore.Builder
 </head>
 <body>
 	<h1>Status: <span class=""{colorStatus(report.Status)}"">{report.Status}</span></h1>
-	<p>TotalDuration: {report.TotalDuration}</p>").ConfigureAwait(false);
+	<p>TotalDuration: {report.TotalDuration}</p>
+	<p>StatusDate: {DateTimeOffset.Now}</p>").ConfigureAwait(false);
 
 			foreach(var key in report.Entries.Keys)
 			{
