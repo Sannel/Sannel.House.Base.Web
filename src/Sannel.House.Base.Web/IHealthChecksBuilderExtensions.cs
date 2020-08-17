@@ -26,11 +26,13 @@ namespace Sannel.House.Base.Web
 		/// <param name="builder">The builder.</param>
 		/// <param name="remoteUri">The remote URI to connect to.</param>
 		/// <param name="description">The description.</param>
+		/// <param name="unhealthyOnError">if set to <c>true</c> unhealthy <c>false</c> degraded</param>
 		/// <returns></returns>
 		/// <exception cref="ArgumentNullException">builder</exception>
 		public static IHealthChecksBuilder AddWebRequestHealthCheck(this IHealthChecksBuilder builder,
 			Uri remoteUri,
-			string description=null)
+			string description=null,
+			bool unhealthyOnError=false)
 		{
 			if(builder is null)
 			{
@@ -41,7 +43,10 @@ namespace Sannel.House.Base.Web
 				(remoteUri ?? throw new ArgumentNullException(nameof(remoteUri))).ToString(),
 				(s) =>
 				{
-					return new WebRequestHealthCheck(remoteUri, s.GetService<IHttpClientFactory>(), description);
+					return new WebRequestHealthCheck(remoteUri, 
+						s.GetService<IHttpClientFactory>(), 
+						description, 
+						unhealthyOnError);
 				},
 				null, null)
 				);

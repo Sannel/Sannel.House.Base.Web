@@ -26,49 +26,67 @@ namespace Sannel.House.Base.Web
 		private readonly Uri remoteHealthCheckUri;
 		private readonly IHttpClientFactory httpFactory;
 		private readonly string description;
-		private readonly bool unhealthyOnErrorNon200;
+		private readonly bool unhealthyOnError;
 
 		public WebRequestHealthCheck(Uri remoteHealthCheckUri,
 			IHttpClientFactory httpFactory,
 			string description = null,
-			bool unhealthyOnErrorNon200=false)
+			bool unhealthyOnError=false)
 		{
 			this.remoteHealthCheckUri = remoteHealthCheckUri ?? throw new ArgumentNullException(nameof(remoteHealthCheckUri));
 			this.httpFactory = httpFactory ?? throw new ArgumentNullException(nameof(httpFactory));
 			this.description = description;
-			this.unhealthyOnErrorNon200 = unhealthyOnErrorNon200;
+			this.unhealthyOnError = unhealthyOnError;
 		}
 
 		[System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "Don't want to crash healthchecks when no response is sent")]
 		public async Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context, CancellationToken cancellationToken = default)
 		{
-			using var client = httpFactory.CreateClient();
-			var result = await client.GetAsync(remoteHealthCheckUri, cancellationToken).ConfigureAwait(false);
-
-			var data = new Dictionary<string, object>();
-
 			try
 			{
-				data["Response"] = await result.Content.ReadAsStringAsync().ConfigureAwait(false);
-			}
-			catch
-			{
+				using var client = httpFactory.CreateClient();
+				var result = await client.GetAsync(remoteHealthCheckUri, cancellationToken).ConfigureAwait(false);
 
-			}
+				var data = new Dictionary<string, object>();
 
-			data["StatusCode"] = result.StatusCode;
+				try
+				{
+					data["Response"] = await result.Content.ReadAsStringAsync().ConfigureAwait(false);
+				}
+				catch
+				{
 
-			if(result.IsSuccessStatusCode)
-			{
-				return new HealthCheckResult(HealthStatus.Healthy, description, data: data);
+				}
+
+				data["StatusCode"] = result.StatusCode;
+
+				if (result.IsSuccessStatusCode)
+				{
+					return new HealthCheckResult(HealthStatus.Healthy, description, data: data);
+				}
+				else
+				{
+					return new HealthCheckResult(
+						(unhealthyOnError)?
+							HealthStatus.Unhealthy: 
+							HealthStatus.Degraded, 
+						description, 
+						data: data);
+				}
 			}
-			else if(unhealthyOnErrorNon200)
+			catch(Exception ex)
 			{
-				return new HealthCheckResult(HealthStatus.Unhealthy, description, data: data);
-			}
-			else
-			{
-				return new HealthCheckResult(HealthStatus.Degraded, description, data: data);
+				var data = new Dictionary<string, object>
+				{
+					{"Exception", ex}
+				};
+
+				return new HealthCheckResult(
+					(unhealthyOnError)?
+						HealthStatus.Unhealthy: 
+						HealthStatus.Degraded, 
+					description, 
+					data: data);
 			}
 		}
 	}
