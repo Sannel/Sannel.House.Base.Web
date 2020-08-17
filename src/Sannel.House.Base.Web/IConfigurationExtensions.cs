@@ -1,4 +1,4 @@
-/* Copyright 2020 Sannel Software, L.L.C.
+/* Copyright 2019-2020 Sannel Software, L.L.C.
 
    Licensed under the Apache License, Version 2.0 (the ""License"");
    you may not use this file except in compliance with the License.
@@ -13,8 +13,6 @@
    limitations under the License.*/
 using Microsoft.Extensions.Configuration;
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Text.RegularExpressions;
 
 namespace Sannel.House.Base.Web
