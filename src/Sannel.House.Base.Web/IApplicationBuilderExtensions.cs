@@ -37,9 +37,20 @@ namespace Microsoft.AspNetCore.Builder
 			var response = new
 			{
 				StatusDate = DateTimeOffset.Now,
-				report.Status,
-				report.TotalDuration,
-				report.Entries
+				Status = report.Status.ToString(),
+				TotalDurationMilliseconds = report.TotalDuration.Milliseconds,
+				Entries = report.Entries.Select(i =>
+				new
+				{
+					Name = i.Key,
+					i.Value.Description,
+					Response = i.Value.Data,
+					DurationMilliseconds = i.Value.Duration.Milliseconds,
+					i.Value.Exception,
+					Status = i.Value.Status.ToString(),
+					i.Value.Tags
+				}
+				)
 			};
 
 			var data = JsonSerializer.Serialize(response);
@@ -89,7 +100,21 @@ namespace Microsoft.AspNetCore.Builder
 	.red{{
 		color: red;
 	}}
+	.toggle .body{{
+		display: none;
+	}}
+	.toggle.open .body{{
+		display: block;
+	}}
 	</style>
+	<script type=""text/javascript"">
+	var toggles = document.querySelectorAll('.toggle .header');
+	toggles.forEach(item => item.addEventListener('click', event =>
+	{{
+		var element = event.target;
+		element.parentNode.classList.toggle('open');
+	}}));
+	</script>
 </head>
 <body>
 	<h1>Status: <span class=""{colorStatus(report.Status)}"">{report.Status}</span></h1>
@@ -115,7 +140,7 @@ namespace Microsoft.AspNetCore.Builder
 					foreach(var d in item.Data)
 					{
 						var id = Guid.NewGuid();
-						await writeStringAsync(stream, $"<p><div class=\"header\" data-id=\"{id}\">{HttpUtility.HtmlEncode(d.Key)}</div><div data-id=\"{id}\">{HttpUtility.HtmlEncode(d.Value)}</div></p>");
+						await writeStringAsync(stream, $"<div class=\"toggle\" data-id=\"{id}\"><div class=\"header\" data-id=\"{id}\">{HttpUtility.HtmlEncode(d.Key)}</div><div class=\"body\" data-id=\"{id}\">{HttpUtility.HtmlEncode(d.Value)}</div></div>");
 					}
 				}
 
@@ -172,6 +197,29 @@ namespace Microsoft.AspNetCore.Builder
 			applicationBuilder.UseHealthChecks(path, options);
 
 			return applicationBuilder;
+		}
+
+		/// <summary>
+		/// Adds A robots.txt response that tells search engines not to crawl this site
+		/// </summary>
+		/// <param name="app">The application.</param>
+		/// <returns></returns>
+		public static IApplicationBuilder AddHouseRobotsTxt(this IApplicationBuilder app)
+		{
+			if (app is null)
+			{
+				throw new ArgumentNullException(nameof(app));
+			}
+
+			app.Map("/robots.txt", (appBuilder) =>
+			{
+				appBuilder.Run(async (context) =>
+				{
+					await context.Response.WriteAsync("User-agent: *\nDisallow: /", Encoding.ASCII).ConfigureAwait(false);
+				});
+			});
+
+			return app;
 		}
 	}
 }
