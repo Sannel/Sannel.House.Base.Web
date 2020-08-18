@@ -204,7 +204,7 @@ namespace Microsoft.AspNetCore.Builder
 		/// </summary>
 		/// <param name="app">The application.</param>
 		/// <returns></returns>
-		public static IApplicationBuilder AddHouseRobotsTxt(this IApplicationBuilder app)
+		public static IApplicationBuilder UseHouseRobotsTxt(this IApplicationBuilder app)
 		{
 			if (app is null)
 			{
