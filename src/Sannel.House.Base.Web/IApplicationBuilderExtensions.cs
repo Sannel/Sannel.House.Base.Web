@@ -108,12 +108,21 @@ namespace Microsoft.AspNetCore.Builder
 	}}
 	</style>
 	<script type=""text/javascript"">
-	var toggles = document.querySelectorAll('.toggle .header');
-	toggles.forEach(item => item.addEventListener('click', event =>
+	function setupClick()
 	{{
-		var element = event.target;
-		element.parentNode.classList.toggle('open');
-	}}));
+		var toggles = document.querySelectorAll('.toggle .header');
+		toggles.forEach(item => item.addEventListener('click', event =>
+		{{
+			var element = event.target;
+			element.parentNode.classList.toggle('open');
+		}}));
+	}}
+
+	document.onreadystatechange = () => {{
+		if (document.readyState === 'complete') {{
+			setupClick();
+		}}
+	}};
 	</script>
 </head>
 <body>
