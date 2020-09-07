@@ -55,7 +55,9 @@ namespace Sannel.House.Base.Web
 						store.Close();
 						return true;
 					}
+#pragma warning disable CA1031 // Do not catch general exception types
 					catch (Exception ex)
+#pragma warning restore CA1031 // Do not catch general exception types
 					{
 						log.LogError(ex, "Exception installing Cert");
 						return false;

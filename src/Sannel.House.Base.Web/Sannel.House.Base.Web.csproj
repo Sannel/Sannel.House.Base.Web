@@ -1,43 +1,65 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
-  <PropertyGroup>
-    <TargetFrameworks>netstandard2.0;netstandard2.1;netcoreapp3.1</TargetFrameworks>
-	  <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-	  <AssemblyVersion>$(Major).$(Minor).$(Patch).$(BuildNumber)</AssemblyVersion>
-	  <FileVersion>$(Major).$(Minor).$(Patch).$(BuildNumber)</FileVersion>
-	  <Version Condition="'$(Configuration)' != 'Release'">$(Major).$(Minor).$(Patch)-beta</Version>
-	  <Version Condition="'$(Configuration)' == 'Release'">$(Major).$(Minor).$(Patch)</Version>
-	  <Authors>Adam Holt</Authors>
-	  <Company>Sannel Software, L.L.C.</Company>
-	  <Description>Classes used to help setup Services and returning responses.</Description>
-	  <PackageLicenseUrl></PackageLicenseUrl>
-	  <PackageProjectUrl>https://github.com/Sannel/Sannel.House.Base.Web</PackageProjectUrl>
-	  <PackageLicenseFile>LICENSE</PackageLicenseFile>
-	  <RepositoryUrl>https://github.com/Sannel/Sannel.House.Base.Web</RepositoryUrl>
-	  <LangVersion>8.0</LangVersion>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFrameworks>netstandard2.0;netcoreapp3.1;net5.0</TargetFrameworks>
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+		<AssemblyVersion>$(Major).$(Minor).$(Patch).$(BuildNumber)</AssemblyVersion>
+		<FileVersion>$(Major).$(Minor).$(Patch).$(BuildNumber)</FileVersion>
+		<Version Condition="'$(Configuration)' != 'Release'">$(Major).$(Minor).$(Patch)-beta</Version>
+		<Version Condition="'$(Configuration)' == 'Release'">$(Major).$(Minor).$(Patch)</Version>
+		<Authors>Adam Holt</Authors>
+		<Company>Sannel Software, L.L.C.</Company>
+		<Description>Classes used to help setup Services and returning responses.</Description>
+		<PackageLicenseUrl></PackageLicenseUrl>
+		<PackageProjectUrl>https://github.com/Sannel/Sannel.House.Base.Web</PackageProjectUrl>
+		<PackageLicenseFile>LICENSE</PackageLicenseFile>
+		<RepositoryUrl>https://github.com/Sannel/Sannel.House.Base.Web</RepositoryUrl>
+		<LangVersion>8.0</LangVersion>
+		<OutputType>Library</OutputType>
+		<IsPackable>true</IsPackable>
+	</PropertyGroup>
 	<ItemGroup>
-		<PackageReference Include="Microsoft.AspNetCore.Diagnostics.HealthChecks" Version="2.2.0" />
 		<PackageReference Include="Microsoft.AspNetCore.Mvc.Abstractions" Version="2.2.0" />
 		<PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.2.5" />
 		<PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="3.3.0">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
+		<PackageReference Include="Sannel.House.Base.Models" Version="0.9.521-beta" />
+		<PackageReference Include="System.Security.Principal" Version="4.3.0" />
+	</ItemGroup>
+	<ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
+		<PackageReference Include="Microsoft.AspNetCore.Diagnostics.HealthChecks" Version="2.2.0" />
+		<PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks" Version="2.2.5" />
 		<PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="3.1.7" />
 		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="3.1.7" />
-		<PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks" Version="3.1.7" />
-		<PackageReference Include="Microsoft.Extensions.Http" Version="3.1.7" />
-		<PackageReference Include="Microsoft.Extensions.Logging" Version="3.1.7" />
-		<PackageReference Include="Sannel.House.Base.Models" Version="0.9.415-beta" />
-		<PackageReference Include="System.Security.Principal" Version="4.3.0" />
+		<PackageReference Include="Microsoft.Extensions.Http" Version="2.1.1" />
+		<PackageReference Include="Microsoft.Extensions.Logging" Version="2.1.1" />
 		<PackageReference Include="System.Security.Principal.Windows" Version="4.7.0" />
 	</ItemGroup>
+	<ItemGroup Condition="'$(TargetFramework)' == 'netcoreapp3.1'">
+		<PackageReference Include="Microsoft.AspNetCore.Diagnostics.HealthChecks" Version="2.2.0" />
+		<PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks" Version="3.1.7" />
+		<PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="3.1.7" />
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="3.1.7" />
+		<PackageReference Include="Microsoft.Extensions.Http" Version="3.1.7" />
+		<PackageReference Include="Microsoft.Extensions.Logging" Version="3.1.7" />
+		<PackageReference Include="System.Security.Principal.Windows" Version="4.7.0" />
+	</ItemGroup>
+	<ItemGroup Condition="'$(TargetFramework)' == 'net5.0'">
+		<PackageReference Include="Microsoft.AspNetCore.Diagnostics.HealthChecks" Version="2.2.0" />
+		<PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks" Version="5.0.0-preview.*" />
+		<PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="5.0.0-preview.*" />
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="5.0.0-preview.*" />
+		<PackageReference Include="Microsoft.Extensions.Http" Version="5.0.0-preview.*" />
+		<PackageReference Include="Microsoft.Extensions.Logging" Version="5.0.0-preview.*" />
+		<PackageReference Include="System.Security.Principal.Windows" Version="5.0.0-preview.*" />
+	</ItemGroup>
 	<ItemGroup>
-	  <None Include="..\..\LICENSE">
-	    <Pack>True</Pack>
-	    <PackagePath></PackagePath>
-	  </None>
+		<None Include="..\..\LICENSE">
+			<Pack>True</Pack>
+			<PackagePath></PackagePath>
+		</None>
 	</ItemGroup>
 
 </Project>
