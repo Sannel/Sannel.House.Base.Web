@@ -7,7 +7,7 @@ pool:
 
 variables:
   support_netstandard20: true
-  support_netstandard21: true
+  support_netstandard21: false
   support_netcoreapp21: false
   support_netcoreapp31: true
   support_net5_0: true
