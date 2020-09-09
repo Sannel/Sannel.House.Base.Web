@@ -70,7 +70,8 @@ namespace Sannel.House.Base.Web
 				throw new ArgumentNullException(nameof(report));
 			}
 
-			using var writer = new XmlTextWriter(stream, Encoding.UTF8);
+			using var mstream = new MemoryStream();
+			using var writer = new XmlTextWriter(mstream, Encoding.UTF8);
 			writer.WriteStartDocument();
 			writer.WriteStartElement("html");
 
@@ -132,7 +133,7 @@ document.onreadystatechange = () => {
 				{
 					var item = report.Entries[key];
 					writer.WriteStartElement("hr");
-					await writer.WriteEndElementAsync().ConfigureAwait(false);
+					writer.WriteEndElement();
 					writer.WriteElementString("h3", key);
 					writer.WriteStartElement("p");
 					{
@@ -208,6 +209,11 @@ document.onreadystatechange = () => {
 
 			writer.WriteEndElement();
 			writer.WriteEndDocument();
+
+			writer.Flush();
+
+			mstream.Seek(0, SeekOrigin.Begin);
+			await mstream.CopyToAsync(stream).ConfigureAwait(false);
 		}
 
 #if NETSTANDARD2_0
