@@ -54,7 +54,7 @@ namespace Sannel.House.Base.Web
 
 			await JsonSerializer.SerializeAsync(stream, response).ConfigureAwait(false);
 		}
-		private static string colorStatus(HealthStatus status)
+		private static string colorStatus(HealthStatus status) 
 			=> status switch
 			{
 				HealthStatus.Healthy => "green",
@@ -65,19 +65,18 @@ namespace Sannel.House.Base.Web
 
 		private static async Task writeHTMLAsync(Stream stream, HealthReport report)
 		{
-			if (report is null)
+			if(report is null)
 			{
 				throw new ArgumentNullException(nameof(report));
 			}
 
 			using var writer = new XmlTextWriter(stream, Encoding.UTF8);
-			await writer.WriteStartDocumentAsync().ConfigureAwait(false);
-			await writer.WriteStartElementAsync(null, "html", null).ConfigureAwait(false);
+			writer.WriteStartDocument();
+			writer.WriteStartElement("html");
 
-			await writer.WriteStartElementAsync(null, "head", null).ConfigureAwait(false);
-			{
-				await writer.WriteElementStringAsync(null, "title", null, report.Status.ToString()).ConfigureAwait(false);
-				await writer.WriteElementStringAsync(null, "style", null, @"
+			writer.WriteStartElement("head");
+				writer.WriteElementString("title", report.Status.ToString());
+				writer.WriteElementString("style", @"
 .green{
 	color: green;
 }
@@ -92,10 +91,10 @@ namespace Sannel.House.Base.Web
 }
 .toggle.open .body{
 	display: block;
-}").ConfigureAwait(false);
-				await writer.WriteStartElementAsync(null, "script", null).ConfigureAwait(false);
-				await writer.WriteAttributeStringAsync(null, "type", null, "text/javascript").ConfigureAwait(false);
-				await writer.WriteStringAsync(@"
+}");
+			writer.WriteStartElement("script");
+			writer.WriteAttributeString("type", "text/javascript");
+			writer.WriteString(@"
 function setupClick()
 {
 	var toggles = document.querySelectorAll('.toggle .header');
@@ -110,89 +109,88 @@ document.onreadystatechange = () => {
 		setupClick();
 	}
 }
-").ConfigureAwait(false);
-				await writer.WriteEndElementAsync().ConfigureAwait(false);
-			}
-			await writer.WriteEndElementAsync().ConfigureAwait(false);
+");
+			writer.WriteEndElement();
+			writer.WriteEndElement();
 
-			await writer.WriteStartElementAsync(null, "body", null).ConfigureAwait(false);
+			writer.WriteStartElement("body");
 			{
-				await writer.WriteStartElementAsync(null, "h1", null).ConfigureAwait(false);
+				writer.WriteStartElement("h1");
 				{
-					await writer.WriteStringAsync("Status: ").ConfigureAwait(false);
-					await writer.WriteStartElementAsync(null, "span", null).ConfigureAwait(false);
-					await writer.WriteAttributeStringAsync(null, "class", null, colorStatus(report.Status)).ConfigureAwait(false);
-					await writer.WriteStringAsync(report.Status.ToString()).ConfigureAwait(false);
-					await writer.WriteEndElementAsync().ConfigureAwait(false);
+					writer.WriteString("Status: ");
+					writer.WriteStartElement("span");
+					writer.WriteAttributeString("class", colorStatus(report.Status));
+					writer.WriteString(report.Status.ToString());
+					writer.WriteEndElement();
 				}
-				await writer.WriteEndElementAsync().ConfigureAwait(false);
+				writer.WriteEndElement();
 
-				await writer.WriteElementStringAsync(null, "p", null, $"TotalDuration: {report.TotalDuration}").ConfigureAwait(false);
-				await writer.WriteElementStringAsync(null, "p", null, $"StatusDate: {DateTimeOffset.Now}").ConfigureAwait(false);
+				writer.WriteElementString("p", $"TotalDuration: {report.TotalDuration}");
+				writer.WriteElementString("p", $"StatusDate: {DateTimeOffset.Now}");
 
-				foreach (var key in report.Entries.Keys)
+				foreach(var key in report.Entries.Keys)
 				{
 					var item = report.Entries[key];
-					await writer.WriteStartElementAsync(null, "hr", null).ConfigureAwait(false);
+					writer.WriteStartElement("hr");
 					await writer.WriteEndElementAsync().ConfigureAwait(false);
-					await writer.WriteElementStringAsync(null, "h3", null, key).ConfigureAwait(false);
-					await writer.WriteStartElementAsync(null, "p", null).ConfigureAwait(false);
+					writer.WriteElementString("h3", key);
+					writer.WriteStartElement("p");
 					{
-						await writer.WriteStringAsync("Status: ").ConfigureAwait(false);
-						await writer.WriteStartElementAsync(null, "span", null).ConfigureAwait(false);
+						writer.WriteString("Status: ");
+						writer.WriteStartElement("span");
 						{
-							await writer.WriteAttributeStringAsync(null, "class", null, colorStatus(item.Status)).ConfigureAwait(false);
-							await writer.WriteStringAsync(item.Status.ToString()).ConfigureAwait(false);
+							writer.WriteAttributeString("class", colorStatus(item.Status));
+							writer.WriteString(item.Status.ToString());
 						}
-						await writer.WriteEndElementAsync().ConfigureAwait(false);
+						writer.WriteEndElement();
 					}
-					await writer.WriteEndElementAsync().ConfigureAwait(false);
+					writer.WriteEndElement();
 
-					await writer.WriteElementStringAsync(null, "p", null, $"Duration: {item.Duration.TotalMilliseconds}").ConfigureAwait(false);
-					await writer.WriteElementStringAsync(null, "p", null, $"Description: {item.Description}").ConfigureAwait(false);
+					writer.WriteElementString("p", $"Duration: {item.Duration.TotalMilliseconds}");
+					writer.WriteElementString("p", $"Description: {item.Description}");
 
-					if (item.Exception != null)
+					if(item.Exception != null)
 					{
-						await writer.WriteStartElementAsync(null, "p", null).ConfigureAwait(false);
+						writer.WriteStartElement("p");
 						{
-							await writer.WriteStringAsync("Exception:").ConfigureAwait(false);
-							await writer.WriteStartElementAsync(null, "br ", null).ConfigureAwait(false);
-							await writer.WriteEndElementAsync().ConfigureAwait(false);
-							await writer.WriteStringAsync(item.Exception.ToString()).ConfigureAwait(false);
+							writer.WriteString("Exception:");
+							writer.WriteStartElement("br ");
+							writer.WriteEndElement();
+							writer.WriteString(item.Exception.ToString());
 						}
-						await writer.WriteEndElementAsync().ConfigureAwait(false);
+						writer.WriteEndElement();
 					}
 
-					if (item.Data?.Count > 0)
+					if(item.Data?.Count > 0)
 					{
 						var id = 0;
-						await writer.WriteElementStringAsync(null, "h4", null, "Data").ConfigureAwait(false);
-						foreach (var d in item.Data)
+						writer.WriteElementString("h4", "Data");
+						foreach(var d in item.Data)
 						{
-							await writer.WriteStartElementAsync(null, "div", null).ConfigureAwait(false);
+							writer.WriteStartElement("div");
 							{
-								await writer.WriteAttributeStringAsync(null, "class", null, "toggle").ConfigureAwait(false);
-								await writer.WriteAttributeStringAsync(null, "data-id", null, $"id{id}").ConfigureAwait(false);
+								writer.WriteAttributeString("class", "toggle");
+								writer.WriteAttributeString("data-id", $"id{id}");
 
-								await writer.WriteStartElementAsync(null, "div", null).ConfigureAwait(false);
+								writer.WriteStartElement("div");
 								{
-									await writer.WriteAttributeStringAsync(null, "class", null, "header").ConfigureAwait(false);
-									await writer.WriteAttributeStringAsync(null, "data-id", null, $"id{id}").ConfigureAwait(false);
+									writer.WriteAttributeString("class", "header");
+									writer.WriteAttributeString("data-id", $"id{id}");
 
-									await writer.WriteStringAsync(d.Key).ConfigureAwait(false);
+									writer.WriteString(d.Key);
 								}
-								await writer.WriteEndElementAsync().ConfigureAwait(false);
+								writer.WriteEndElement();
 
-								await writer.WriteStartElementAsync(null, "div", null).ConfigureAwait(false);
+								writer.WriteStartElement("div");
 								{
-									await writer.WriteAttributeStringAsync(null, "class", null, "body").ConfigureAwait(false);
-									await writer.WriteAttributeStringAsync(null, "data-id", null, $"id{id}").ConfigureAwait(false);
+									writer.WriteAttributeString("class", "body");
+									writer.WriteAttributeString("data-id", $"id{id}");
 
-									await writer.WriteStringAsync(d.Value?.ToString()).ConfigureAwait(false);
+									writer.WriteString(d.Value?.ToString());
 								}
-								await writer.WriteEndElementAsync().ConfigureAwait(false);
+								writer.WriteEndElement();
 							}
-							await writer.WriteEndElementAsync().ConfigureAwait(false);
+							writer.WriteEndElement();
 							id++;
 						}
 					}
@@ -200,8 +198,8 @@ document.onreadystatechange = () => {
 #if !NETSTANDARD2_0
 					if (item.Tags.Any())
 					{
-						await writer.WriteElementStringAsync(null, "h4", null, "Tags").ConfigureAwait(false);
-						await writer.WriteElementStringAsync(null, "p", null, string.Join(",", item.Tags)).ConfigureAwait(false);
+						writer.WriteElementString("h4", "Tags");
+						writer.WriteElementString("p", string.Join(",", item.Tags));
 					}
 #endif
 				}
