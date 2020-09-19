@@ -1,4 +1,4 @@
-/* Copyright 2020 Sannel Software, L.L.C.
+/* Copyright 2020-2020 Sannel Software, L.L.C.
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
    You may obtain a copy of the License at
@@ -8,6 +8,7 @@
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.*/
+
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Sannel.House.Base.Models;
 using System;
@@ -23,11 +24,17 @@ namespace Sannel.House.Base.Web.Tests
 		[Fact]
 		public async Task FillWithStateDictionaryAsyncTest()
 		{
-			ErrorResponseModel model = null;
+#if NETCOREAPP2_1
+			ErrorResponseModel model
+				= null;
 
 			Assert.Throws<ArgumentNullException>("model", () => model.FillWithStateDictionary(null));
 			model = new ErrorResponseModel();
 			Assert.Throws<ArgumentNullException>("modelState", () => model.FillWithStateDictionary(null));
+#else
+			ErrorResponseModel model = new ErrorResponseModel();
+#endif
+
 			var state = new ModelStateDictionary();
 			await model.FillWithStateDictionaryAsync(state);
 			Assert.Empty(model.Errors);

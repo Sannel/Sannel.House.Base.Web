@@ -1,4 +1,4 @@
-/* Copyright 2020 Sannel Software, L.L.C.
+/* Copyright 2020-2020 Sannel Software, L.L.C.
 
    Licensed under the Apache License, Version 2.0 (the ""License"");
    you may not use this file except in compliance with the License.
@@ -11,6 +11,7 @@
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.*/
+
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
@@ -35,7 +36,9 @@ namespace Sannel.House.Base.Web.Tests
 			var token = controller.GetAuthToken();
 
 			Assert.Equal("1234", token);
+#if NETCOREAPP2_1
 			Assert.Equal("", ControllerBaseExtensions.GetAuthToken(null));
+#endif
 			controller.HttpContext.Request.Headers.Clear();
 			Assert.Equal("", controller.GetAuthToken());
 		}

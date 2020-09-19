@@ -1,4 +1,4 @@
-/* Copyright 2020 Sannel Software, L.L.C.
+/* Copyright 2020-2020 Sannel Software, L.L.C.
 
    Licensed under the Apache License, Version 2.0 (the ""License"");
    you may not use this file except in compliance with the License.
@@ -11,6 +11,7 @@
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.*/
+
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
@@ -39,6 +40,7 @@ namespace Sannel.House.Base.Web.Tests
 			Assert.Equal("cheddar cheese", value2);
 		}
 
+#if NETCOREAPP2_1
 		[Fact]
 		public void GetWithReplacementArgumentTest()
 		{
@@ -48,5 +50,6 @@ namespace Sannel.House.Base.Web.Tests
 			IConfiguration config = configuration.Build();
 			Assert.Throws<ArgumentNullException>("key", () => config.GetWithReplacement(null));
 		}
+#endif
 	}
 }
