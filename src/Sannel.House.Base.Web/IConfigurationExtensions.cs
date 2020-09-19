@@ -67,7 +67,7 @@ namespace Sannel.House.Base.Web
 				});
 			}
 
-			return value;
+			return value ?? string.Empty;
 		}
 
 	}

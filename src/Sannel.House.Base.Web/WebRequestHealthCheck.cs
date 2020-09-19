@@ -25,12 +25,35 @@ namespace Sannel.House.Base.Web
 	{
 		private readonly Uri remoteHealthCheckUri;
 		private readonly IHttpClientFactory httpFactory;
-		private readonly string description;
+		private readonly
+#if NETCOREAPP2_1
+			string
+#else
+			string? 
+#endif
+			description;
 		private readonly bool unhealthyOnError;
 
+		/// <summary>
+		/// Initializes a new instance of the <see cref="WebRequestHealthCheck"/> class.
+		/// </summary>
+		/// <param name="remoteHealthCheckUri">The remote health check URI.</param>
+		/// <param name="httpFactory">The HTTP factory.</param>
+		/// <param name="description">The description.</param>
+		/// <param name="unhealthyOnError">if set to <c>true</c> [unhealthy on error].</param>
+		/// <exception cref="ArgumentNullException">
+		/// remoteHealthCheckUri
+		/// or
+		/// httpFactory
+		/// </exception>
 		public WebRequestHealthCheck(Uri remoteHealthCheckUri,
+#if NETCOREAPP2_1
 			IHttpClientFactory httpFactory,
 			string description = null,
+#else
+			IHttpClientFactory? httpFactory,
+			string? description = null,
+#endif
 			bool unhealthyOnError=false)
 		{
 			this.remoteHealthCheckUri = remoteHealthCheckUri ?? throw new ArgumentNullException(nameof(remoteHealthCheckUri));
@@ -90,6 +113,7 @@ namespace Sannel.House.Base.Web
 						HealthStatus.Unhealthy: 
 						HealthStatus.Degraded, 
 					description, 
+					exception: ex,
 					data: data);
 			}
 		}

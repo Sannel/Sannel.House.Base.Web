@@ -35,34 +35,30 @@ namespace Sannel.House.Base.Web
 		/// <param name="log">The log.</param>
 		public static bool InstallCertificate(StoreName name, StoreLocation location, string fullPath, ILogger log)
 		{
-			using (var cert = new X509Certificate2(fullPath))
+			using var cert = new X509Certificate2(fullPath);
+			using var store = new X509Store(name, location);
+			try
 			{
-				using (var store = new X509Store(name, location))
+				store.Open(OpenFlags.ReadWrite);
+				if (!store.Certificates.Contains(cert))
 				{
-					try
-					{
-						store.Open(OpenFlags.ReadWrite);
-						if (!store.Certificates.Contains(cert))
-						{
-							log.LogInformation($"Trying to install cert {cert.SubjectName}");
-							store.Add(cert);
-							log.LogInformation("Cert Installed");
-						}
-						else
-						{
-							log.LogInformation("Cert is already installed");
-						}
-						store.Close();
-						return true;
-					}
-#pragma warning disable CA1031 // Do not catch general exception types
-					catch (Exception ex)
-#pragma warning restore CA1031 // Do not catch general exception types
-					{
-						log.LogError(ex, "Exception installing Cert");
-						return false;
-					}
+					log.LogInformation($"Trying to install cert {cert.SubjectName}");
+					store.Add(cert);
+					log.LogInformation("Cert Installed");
 				}
+				else
+				{
+					log.LogInformation("Cert is already installed");
+				}
+				store.Close();
+				return true;
+			}
+#pragma warning disable CA1031 // Do not catch general exception types
+			catch (Exception ex)
+#pragma warning restore CA1031 // Do not catch general exception types
+			{
+				log.LogError(ex, "Exception installing Cert");
+				return false;
 			}
 		}
 
@@ -70,8 +66,8 @@ namespace Sannel.House.Base.Web
 		/// <param name="provider">The provider.</param>
 		public static void CheckAndInstallTrustedCertificate(this IServiceProvider provider)
 		{
-			var config = provider.GetService<IConfiguration>();
-			var log = provider.GetService<ILogger<IServiceProvider>>();
+			var config = provider.GetService<IConfiguration>() ?? throw new ArgumentException("No service is configured for IConfiguration");
+			var log = provider.GetService<ILogger<IServiceProvider>>() ?? throw new ArgumentException("No service is configured for ILogger<>");
 			var shouldInstall = config.GetValue<bool?>("Cert:Install");
 
 			if (shouldInstall == true)

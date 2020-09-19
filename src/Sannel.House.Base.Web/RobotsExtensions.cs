@@ -14,6 +14,7 @@
 
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using System;
 using System.IO;
@@ -25,9 +26,22 @@ using System.Web;
 
 namespace Microsoft.AspNetCore.Builder
 {
-	public static class IApplicationBuilderExtensions
+	/// <summary>
+	/// 
+	/// </summary>
+	public static class RobotsExtensions
 	{
+		private static Task writeRobotsTxtAsync(HttpResponse response)
+		{
+			if(response is null)
+			{
+				throw new ArgumentNullException(nameof(response));
+			}
 
+			return response.WriteAsync("User-agent: *\nDisallow: /", Encoding.ASCII);
+		}
+
+#if NETCOREAPP2_1
 		/// <summary>
 		/// Adds A robots.txt response that tells search engines not to crawl this site
 		/// </summary>
@@ -44,11 +58,33 @@ namespace Microsoft.AspNetCore.Builder
 			{
 				appBuilder.Run(async (context) =>
 				{
-					await context.Response.WriteAsync("User-agent: *\nDisallow: /", Encoding.ASCII).ConfigureAwait(false);
+					await writeRobotsTxtAsync(context.Response).ConfigureAwait(false);
 				});
 			});
 
 			return app;
 		}
+#else
+		/// <summary>
+		/// Adds A robots.txt response that tells search engines not to crawl this site
+		/// </summary>
+		/// <param name="endpointRoute">The endpoint route.</param>
+		/// <returns></returns>
+		/// <exception cref="ArgumentNullException">endpointRoute</exception>
+		public static IEndpointRouteBuilder UseHouseRobotsTxt(this IEndpointRouteBuilder endpointRoute)
+		{
+			if(endpointRoute is null)
+			{
+				throw new ArgumentNullException(nameof(endpointRoute));
+			}
+
+			endpointRoute.Map("/robots.txt",async (context) =>
+			{
+				await writeRobotsTxtAsync(context.Response).ConfigureAwait(false);
+			});
+
+			return endpointRoute;
+		}
+#endif
 	}
 }

@@ -31,7 +31,11 @@ namespace Sannel.House.Base.Web
 		/// <exception cref="ArgumentNullException">builder</exception>
 		public static IHealthChecksBuilder AddWebRequestHealthCheck(this IHealthChecksBuilder builder,
 			Uri remoteUri,
+#if NETCOREAPP2_1
 			string description=null,
+#else
+			string? description=null,
+#endif
 			bool unhealthyOnError=false)
 		{
 			if(builder is null)

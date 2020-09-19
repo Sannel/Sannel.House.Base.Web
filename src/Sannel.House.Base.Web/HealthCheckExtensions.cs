@@ -27,6 +27,9 @@ using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 
 namespace Sannel.House.Base.Web
 {
+	/// <summary>
+	/// 
+	/// </summary>
 	public static class HealthCheckExtensions
 	{
 		private static async Task writeJsonAsync(Stream stream, HealthReport report)
@@ -45,7 +48,7 @@ namespace Sannel.House.Base.Web
 					DurationMilliseconds = i.Value.Duration.Milliseconds,
 					i.Value.Exception,
 					Status = i.Value.Status.ToString(),
-#if !NETSTANDARD2_0
+#if !NETCOREAPP2_1
 					i.Value.Tags
 #endif
 				}
@@ -196,7 +199,7 @@ document.onreadystatechange = () => {
 						}
 					}
 
-#if !NETSTANDARD2_0
+#if !NETCOREAPP2_1
 					if (item.Tags.Any())
 					{
 						writer.WriteElementString("h4", "Tags");
@@ -216,7 +219,13 @@ document.onreadystatechange = () => {
 			await mstream.CopyToAsync(stream).ConfigureAwait(false);
 		}
 
-#if NETSTANDARD2_0
+#if NETCOREAPP2_1
+		/// <summary>
+		/// Setup the Healthcheck for House Services
+		/// </summary>
+		/// <param name="applicationBuilder"></param>
+		/// <param name="path"></param>
+		/// <returns></returns>
 		public static IApplicationBuilder UseHouseHealthChecks(this IApplicationBuilder applicationBuilder,
 			PathString path)
 		{
@@ -230,6 +239,17 @@ document.onreadystatechange = () => {
 				throw new ArgumentNullException(nameof(path));
 			}
 #else
+		/// <summary>
+		/// Maps the house healthcheck for House Services
+		/// </summary>
+		/// <param name="builder">The builder.</param>
+		/// <param name="path">The path.</param>
+		/// <returns></returns>
+		/// <exception cref="ArgumentNullException">
+		/// builder
+		/// or
+		/// path
+		/// </exception>
 		public static IEndpointRouteBuilder MapHouseHealthChecks(this IEndpointRouteBuilder builder, PathString path)
 		{
 			if (builder is null)
@@ -266,7 +286,7 @@ document.onreadystatechange = () => {
 				}
 			};
 
-#if NETSTANDARD2_0
+#if NETCOREAPP2_1
 			applicationBuilder.UseHealthChecks(path, options);
 
 			return applicationBuilder;

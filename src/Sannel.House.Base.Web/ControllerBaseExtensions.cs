@@ -29,8 +29,12 @@ namespace Sannel.House.Base.Web
 				return string.Empty;
 			}
 
-			string auth = controller.HttpContext?.Request?.Headers["Authorization"];
-			if (auth != null)
+#if NETCOREAPP2_1
+			string auth = controller.HttpContext?.Request?.Headers?["Authorization"];
+#else
+			string? auth = controller.HttpContext.Request.Headers["Authorization"];
+#endif
+			if (!string.IsNullOrWhiteSpace(auth))
 			{
 				var segments = auth.Split(' ');
 				if (segments?.Length == 2)
