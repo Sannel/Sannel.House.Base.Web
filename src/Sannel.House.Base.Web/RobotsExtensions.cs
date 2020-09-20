@@ -71,7 +71,7 @@ namespace Microsoft.AspNetCore.Builder
 		/// <param name="endpointRoute">The endpoint route.</param>
 		/// <returns></returns>
 		/// <exception cref="ArgumentNullException">endpointRoute</exception>
-		public static IEndpointRouteBuilder UseHouseRobotsTxt(this IEndpointRouteBuilder endpointRoute)
+		public static IEndpointRouteBuilder MapHouseRobotsTxt(this IEndpointRouteBuilder endpointRoute)
 		{
 			if(endpointRoute is null)
 			{
