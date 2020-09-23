@@ -106,7 +106,7 @@ function setupClick()
 	{
 		var element = event.target;
 		element.parentNode.classList.toggle('open');
-	});
+	}));
 }
 document.onreadystatechange = () => {
 	if(document.readyState === 'complete'){
