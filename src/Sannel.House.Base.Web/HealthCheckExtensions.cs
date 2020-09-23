@@ -98,7 +98,7 @@ namespace Sannel.House.Base.Web
 }");
 			writer.WriteStartElement("script");
 			writer.WriteAttributeString("type", "text/javascript");
-			writer.WriteString(@"
+			writer.WriteRaw(@"
 function setupClick()
 {
 	var toggles = document.querySelectorAll('.toggle .header');
