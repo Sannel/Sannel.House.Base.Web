@@ -81,14 +81,21 @@ namespace Sannel.House.Base.Web
 			writer.WriteStartElement("head");
 				writer.WriteElementString("title", report.Status.ToString());
 				writer.WriteElementString("style", @"
+body{
+	background: #171717;
+	color: #E3E3E3;
+}
+.label{
+	color: #9cdcfe;
+}
 .green{
-	color: green;
+	color: #094409;
 }
 .orange{
-	color: orange;
+	color: darkorange;
 }
 .red{
-	color: red;
+	color: #ED1C22;
 }
 .toggle .body{
 	display: none;
