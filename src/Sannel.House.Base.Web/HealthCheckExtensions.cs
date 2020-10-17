@@ -24,6 +24,7 @@ using System.Linq;
 using System.Xml;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using System.Globalization;
 
 namespace Sannel.House.Base.Web
 {
@@ -82,20 +83,20 @@ namespace Sannel.House.Base.Web
 				writer.WriteElementString("title", report.Status.ToString());
 				writer.WriteElementString("style", @"
 body{
-	background: #171717;
+	background: ##313131;
 	color: #E3E3E3;
 }
 .label{
-	color: #9cdcfe;
+	color: #00aaf5;
 }
 .green{
-	color: #094409;
+	color: #28a95e;
 }
 .orange{
-	color: darkorange;
+	color: #f0c310;
 }
 .red{
-	color: #ED1C22;
+	color: #f05455;
 }
 .toggle .body{
 	display: none;
@@ -128,7 +129,12 @@ document.onreadystatechange = () => {
 			{
 				writer.WriteStartElement("h1");
 				{
-					writer.WriteString("Status: ");
+					writer.WriteStartElement("label");
+					{
+						writer.WriteAttributeString("class", "label");
+						writer.WriteString("Status: ");
+					}
+					writer.WriteEndElement();
 					writer.WriteStartElement("span");
 					writer.WriteAttributeString("class", colorStatus(report.Status));
 					writer.WriteString(report.Status.ToString());
@@ -136,8 +142,32 @@ document.onreadystatechange = () => {
 				}
 				writer.WriteEndElement();
 
-				writer.WriteElementString("p", $"TotalDuration: {report.TotalDuration}");
-				writer.WriteElementString("p", $"StatusDate: {DateTimeOffset.Now}");
+				writer.WriteStartElement("p");
+				{
+					writer.WriteStartElement("label");
+					{
+						writer.WriteAttributeString("class", "label");
+						writer.WriteString("TotalDuration");
+					}
+					writer.WriteEndElement();
+					writer.WriteString(" ");
+					writer.WriteString(report.TotalDuration.TotalMilliseconds.ToString(CultureInfo.InvariantCulture));
+					writer.WriteString(" ms");
+				}
+				writer.WriteEndElement();
+
+				writer.WriteStartElement("p");
+				{
+					writer.WriteStartElement("label");
+					{
+						writer.WriteAttributeString("class", "label");
+						writer.WriteString("StatusDate:");
+					}
+					writer.WriteEndElement();
+					writer.WriteString(" ");
+					writer.WriteString(DateTimeOffset.Now.ToString(CultureInfo.CurrentCulture));
+				}
+				writer.WriteEndElement();
 
 				foreach(var key in report.Entries.Keys)
 				{
@@ -147,7 +177,13 @@ document.onreadystatechange = () => {
 					writer.WriteElementString("h3", key);
 					writer.WriteStartElement("p");
 					{
-						writer.WriteString("Status: ");
+						writer.WriteStartElement("label");
+						{
+							writer.WriteAttributeString("class", "label");
+							writer.WriteString("Status: ");
+						}
+						writer.WriteEndElement();
+
 						writer.WriteStartElement("span");
 						{
 							writer.WriteAttributeString("class", colorStatus(item.Status));
@@ -157,14 +193,42 @@ document.onreadystatechange = () => {
 					}
 					writer.WriteEndElement();
 
-					writer.WriteElementString("p", $"Duration: {item.Duration.TotalMilliseconds}");
-					writer.WriteElementString("p", $"Description: {item.Description}");
+					writer.WriteStartElement("p");
+					{
+						writer.WriteStartElement("label");
+						{
+							writer.WriteAttributeString("class", "label");
+							writer.WriteString("Duration: ");
+						}
+						writer.WriteEndElement();
+
+						writer.WriteString(item.Duration.TotalMilliseconds.ToString(CultureInfo.InvariantCulture));
+						writer.WriteString(" ms");
+					}
+					writer.WriteEndElement();
+
+					writer.WriteStartElement("p");
+					{
+						writer.WriteStartElement("label");
+						{
+							writer.WriteAttributeString("class", "label");
+							writer.WriteString("Description: ");
+						}
+						writer.WriteEndElement();
+						writer.WriteString(item.Description);
+					}
+					writer.WriteEndElement();
 
 					if(item.Exception != null)
 					{
 						writer.WriteStartElement("p");
 						{
-							writer.WriteString("Exception:");
+							writer.WriteStartElement("label");
+							{
+								writer.WriteAttributeString("class", "label");
+								writer.WriteString("Exception: ");
+							}
+							writer.WriteEndElement();
 							writer.WriteStartElement("br ");
 							writer.WriteEndElement();
 							writer.WriteString(item.Exception.ToString());
@@ -209,7 +273,12 @@ document.onreadystatechange = () => {
 #if !NETCOREAPP2_1
 					if (item.Tags.Any())
 					{
-						writer.WriteElementString("h4", "Tags");
+						writer.WriteStartElement("h4");
+						{
+							writer.WriteAttributeString("class", "label");
+							writer.WriteString("Tags");
+						}
+						writer.WriteEndElement();
 						writer.WriteElementString("p", string.Join(",", item.Tags));
 					}
 #endif
