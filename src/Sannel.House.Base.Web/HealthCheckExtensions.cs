@@ -83,7 +83,7 @@ namespace Sannel.House.Base.Web
 				writer.WriteElementString("title", report.Status.ToString());
 				writer.WriteElementString("style", @"
 body{
-	background: ##313131;
+	background: #313131;
 	color: #E3E3E3;
 }
 .label{
