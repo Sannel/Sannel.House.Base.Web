@@ -50,7 +50,7 @@ namespace Sannel.House.Base.Web.AuthorizationRequirement
 			{
 				throw new ArgumentNullException(nameof(context));
 			}
-			var scope = context.User?.Claims?.FirstOrDefault(i => i.Type == "scope");
+			var scope = context.User?.Claims?.FirstOrDefault(i => string.Equals(i.Type, SCOPETYPE, StringComparison.OrdinalIgnoreCase));
 			if (scope is not null)
 			{
 
@@ -58,7 +58,7 @@ namespace Sannel.House.Base.Web.AuthorizationRequirement
 
 				if (s is not null && s.Any() && scopes.Any())
 				{
-					if (s.Any(i => this.scopes.Contains(i)))
+					if (s.Any(i => this.scopes.Contains(i, StringComparer.Ordinal)))
 					{
 						context.Succeed(requirement);
 					}

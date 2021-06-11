@@ -1,9 +1,9 @@
 trigger:
-- master
+- main
 - develop
 
 pr:
-- master
+- main
 - develop
 - feature/*
 
@@ -16,8 +16,8 @@ variables:
   support_netcoreapp21: true
   support_netcoreapp31: true
   support_net5_0: true
-  Major: 0
-  Minor: 9
+  Major: 1
+  Minor: 0
 
 resources:
   repositories:
